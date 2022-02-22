@@ -6,12 +6,12 @@ TODO: Looks for enemy outpost, checks x value vs y value to determine if current
 """
 
 
-def find_map_corner_coordinates(img_rgb):
+def find_map_corner_coordinates(img_hsv):
     pass
 
 
 if __name__ == '__main__':
     # Imports test images for both player playing as both radiant/dire, plots bounding box for minimap for both full
-    # frames. Note that it converts it from HSV to RGB.
+    # frames. Note that it requires HSV images.
     a = 5
 
