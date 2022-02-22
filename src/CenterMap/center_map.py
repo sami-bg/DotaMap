@@ -13,5 +13,5 @@ def find_map_corner_coordinates(img_hsv):
 if __name__ == '__main__':
     # Imports test images for both player playing as both radiant/dire, plots bounding box for minimap for both full
     # frames. Note that it requires HSV images.
-    a = 5
+    a = 0
 
