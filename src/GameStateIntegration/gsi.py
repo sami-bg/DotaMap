@@ -45,10 +45,33 @@ def start_node_gsi_server():
 
 
 # Start GSI server
-gsi = web.Application()
+routes = web.RouteTableDef()
 game_started = False
 player_coordinates: Location = Location(0, 0)
 start_node_gsi_server()
 
+
 # Defines server for which events triggered in node GSI server will send notifications to
+def process_gsi(args):
+    pass
+
+
+@routes.post('/json')
+# ?page=1&uppercase=true
+async def receive_gsi(request: web.Request) -> web.Response:
+    args = await request.json()
+    # Add the user
+    # ...
+    process_gsi(args)
+    return web.Response(text="JSON Received.")
+
+
+async def init_app() -> web.Application:
+    gsi = web.Application()
+    gsi.add_routes(routes)
+    return gsi
+
+
+web.run_app(init_app())
+
 
