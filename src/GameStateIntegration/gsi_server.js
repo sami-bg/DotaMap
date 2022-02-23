@@ -3,6 +3,7 @@ var server = new d2gsi();
 const axios = require("axios").default;
 
 var global_gsi = {
+  match_id: -1,
   team: "",
   building: null, // I'd rather just slap the entire building json here tbh
   players: {
@@ -107,6 +108,7 @@ function sendGameState() {
 */
 
 function detectVisibilityTeamsOrPlayerOrSpectator(gsi) {
+  global_gsi.match_id = parseInt(gsi.map.matchid);
   if (
     gsi.player.hasOwnProperty("team2") ||
     gsi.player.hasOwnProperty("team3")
@@ -135,10 +137,10 @@ function detectVisibilityTeamsOrPlayerOrSpectator(gsi) {
 }
 
 /* Given a hero's JSON, player ID (0-9), and team, stores the x/y coordinate in the global json */
-function capturePlayerData(heroJson, team, isCoordinateX, playerId) {
+function capturePlayerData(heroJson, team, isCoordinateX, playerId, pos) {
   if (global_gsi.team === "all") {
     let playerStr = "player" + playerId;
-    let pos = isCoordinateX ? heroJson.xpos : heroJson.ypos;
+    // let pos = isCoordinateX ? heroJson.xpos : heroJson.ypos;
     if (isCoordinateX) {
       global_gsi.players[playerStr].xpos = pos;
     } else {
@@ -190,83 +192,83 @@ server.events.on("newclient", function (client) {
   // correlate who these coordinates are for unless you are on team 'all'.
   // Some crazy shenanigans goes on when I use a for loop for this, so I gave up in the name of AGILE DEVELOPMENT
   client.on("hero:team2:player0:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player0"], 2, true, 0);
+    capturePlayerData(this.gamestate.hero["team2"]["player0"], 2, true, 0, xpos);
   });
 
   client.on("hero:team2:player0:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player0"], 2, false, 0);
+    capturePlayerData(this.gamestate.hero["team2"]["player0"], 2, false, 0, ypos);
   });
 
   client.on("hero:team2:player1:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player1"], 2, true, 1);
+    capturePlayerData(this.gamestate.hero["team2"]["player1"], 2, true, 1, xpos);
   });
 
   client.on("hero:team2:player1:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player1"], 2, false, 1);
+    capturePlayerData(this.gamestate.hero["team2"]["player1"], 2, false, 1, ypos);
   });
 
   client.on("hero:team2:player2:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player2"], 2, true, 2);
+    capturePlayerData(this.gamestate.hero["team2"]["player2"], 2, true, 2, xpos);
   });
 
   client.on("hero:team2:player2:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player2"], 2, false, 2);
+    capturePlayerData(this.gamestate.hero["team2"]["player2"], 2, false, 2, ypos);
   });
 
   client.on("hero:team2:player3:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player3"], 2, true, 3);
+    capturePlayerData(this.gamestate.hero["team2"]["player3"], 2, true, 3, xpos);
   });
 
   client.on("hero:team2:player3:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player3"], 2, false, 3);
+    capturePlayerData(this.gamestate.hero["team2"]["player3"], 2, false, 3, ypos);
   });
 
   client.on("hero:team2:player4:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player4"], 2, true, 4);
+    capturePlayerData(this.gamestate.hero["team2"]["player4"], 2, true, 4, xpos);
   });
 
   client.on("hero:team2:player4:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team2"]["player4"], 2, false, 4);
+    capturePlayerData(this.gamestate.hero["team2"]["player4"], 2, false, 4, ypos);
   });
   // Dire
   client.on("hero:team3:player5:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player5"], 3, true, 5);
+    capturePlayerData(this.gamestate.hero["team3"]["player5"], 3, true, 5, xpos);
   });
 
   client.on("hero:team3:player5:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player5"], 3, false, 5);
+    capturePlayerData(this.gamestate.hero["team3"]["player5"], 3, false, 5, ypos);
   });
 
   client.on("hero:team3:player6:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player6"], 3, true, 6);
+    capturePlayerData(this.gamestate.hero["team3"]["player6"], 3, true, 6, xpos);
   });
 
   client.on("hero:team3:player6:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player6"], 3, false, 6);
+    capturePlayerData(this.gamestate.hero["team3"]["player6"], 3, false, 6, ypos);
   });
 
   client.on("hero:team3:player7:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player7"], 3, true, 7);
+    capturePlayerData(this.gamestate.hero["team3"]["player7"], 3, true, 7, xpos);
   });
 
   client.on("hero:team3:player7:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player7"], 3, false, 7);
+    capturePlayerData(this.gamestate.hero["team3"]["player7"], 3, false, 7, ypos);
   });
 
   client.on("hero:team3:player8:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player8"], 3, true, 8);
+    capturePlayerData(this.gamestate.hero["team3"]["player8"], 3, true, 8, xpos);
   });
 
   client.on("hero:team3:player8:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player8"], 3, false, 8);
+    capturePlayerData(this.gamestate.hero["team3"]["player8"], 3, false, 8, ypos);
   });
 
   client.on("hero:team3:player9:xpos", function (xpos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player9"], 3, true, 9);
+    capturePlayerData(this.gamestate.hero["team3"]["player9"], 3, true, 9, xpos);
   });
 
   client.on("hero:team3:player9:ypos", function (ypos) {
-    capturePlayerData(this.gamestate.hero["team3"]["player9"], 3, false, 9);
+    capturePlayerData(this.gamestate.hero["team3"]["player9"], 3, false, 9, ypos);
   });
 
   client.on("map:game_time", function (game_time) {
@@ -294,4 +296,4 @@ server.events.on("newclient", function (client) {
   });
 });
 
-setInterval(sendGameState, 150);
+// setInterval(sendGameState, 150);

@@ -3,6 +3,7 @@ from aiohttp import web
 from src.Models.location import Location
 import dota2gsi
 import json
+import redis
 
 """
 Combines all the other modules to send data to the server that the client Twitch extension will interface with:
@@ -45,6 +46,18 @@ steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration\.
 The file must use the name pattern called gamestate_integration_*.cfg, for example gamestate_integration_dota2-gsi.cfg.'
 """
 
+with open("../app.json") as redisConfig:
+    redisJsonObject = json.load(redisConfig)
+    redisConfig.close()
+
+REDIS_HOST_NAME = redisJsonObject['redis']['host_name']
+REDIS_ACCESS_KEY = redisJsonObject['redis']['primary_access_key']
+REDIS_CONNECTION_STRING = redisJsonObject['redis']['primary_connection_string']
+REDIS_SSL_PORT = redisJsonObject['redis']['ssl_port']
+
+r = redis.StrictRedis(host=REDIS_HOST_NAME, port=REDIS_SSL_PORT,
+                      password=REDIS_ACCESS_KEY, ssl=True)
+
 
 def start_node_gsi_server():
     # Popen is non-blocking.
@@ -63,8 +76,15 @@ def process_gsi(args):
     print(json.loads(args['body']))
 
 
+
+
+def send_to_redis(data):
+    # matchid_[all/radiant/dire]_player_[0-9] , value: (x, y, hero_id)
+    # matchid_[all/radiant/dire]_building_[...] , value : alive/dead
+    pass
+
+
 @routes.post('/json')
-# ?page=1&uppercase=true
 async def receive_gsi(request: web.Request) -> web.Response:
     args = await request.json()
     # Add the user
@@ -76,6 +96,8 @@ async def receive_gsi(request: web.Request) -> web.Response:
 async def init_app() -> web.Application:
     gsi = web.Application()
     gsi.add_routes(routes)
+    redis_ping = r.ping()
+    print("Ping returned : " + str(redis_ping))
     # start_node_gsi_server()
     return gsi
 
