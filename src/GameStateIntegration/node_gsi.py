@@ -2,6 +2,7 @@ import subprocess
 from aiohttp import web
 from src.Models.location import Location
 import dota2gsi
+import json
 
 """
 Combines all the other modules to send data to the server that the client Twitch extension will interface with:
@@ -55,12 +56,11 @@ def start_node_gsi_server():
 routes = web.RouteTableDef()
 game_started = False
 player_coordinates: Location = Location(0, 0)
-start_node_gsi_server()
 
 
 # Defines server for which events triggered in node GSI server will send notifications to
 def process_gsi(args):
-    pass
+    print(json.loads(args['body']))
 
 
 @routes.post('/json')
@@ -70,13 +70,15 @@ async def receive_gsi(request: web.Request) -> web.Response:
     # Add the user
     # ...
     process_gsi(args)
-    return web.Response(text=f"JSON Received: {args}")
+    return web.Response(text=f"JSON Received.")
 
 
 async def init_app() -> web.Application:
     gsi = web.Application()
     gsi.add_routes(routes)
+    # start_node_gsi_server()
     return gsi
+
 
 # NOTE: top-right xpos y-pos:
 # Hero y position: 6688
@@ -86,6 +88,4 @@ async def init_app() -> web.Application:
 # Most positive y: 6906
 # Most positive x: 7456
 # 0,0 is the middle of the map, about dire mid stairs. top left is -x +y, top right is +x+y, bottom left is -x-y, etc.
-web.run_app(init_app())
-
-
+web.run_app(init_app(), port=8080)

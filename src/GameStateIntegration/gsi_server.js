@@ -71,7 +71,7 @@ var global_gsi = {
   map_win: "",
 };
 
-function sendGameState(gameStateObject) {
+function sendGameState() {
   axios
     .post("http://127.0.0.1:8080/json", {
       method: "POST",
@@ -80,21 +80,17 @@ function sendGameState(gameStateObject) {
         Accept: "application/json",
       },
       // Stringify the payload into JSON:
-      body: JSON.stringify(gameStateObject),
+      body: JSON.stringify(global_gsi),
     })
     .then((res) => {
       console.log(res);
-      if (res.ok) {
-        return res.json();
+      if (res.status === 200) {
+        // console.log(res.data);
+        return res;
       } else {
-        console.log("something is wrong");
+        console.log("NodeJS - Something is wrong: " + res);
       }
-    })
-    .then((jsonResponse) => {
-      // Log the response data in the console
-      console.log(jsonResponse);
-    })
-    .catch((err) => console.error(err));
+    });
 }
 
 /* Game started/ended. - check
@@ -298,4 +294,4 @@ server.events.on("newclient", function (client) {
   });
 });
 
-// setInterval(sendGameState, 150);
+setInterval(sendGameState, 150);
