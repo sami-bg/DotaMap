@@ -75,12 +75,16 @@ player_coordinates: Location = Location(0, 0)
 def process_gsi(args):
     print(json.loads(args['body']))
 
+# https://cybermaxs.wordpress.com/2015/08/28/storing-time-series-in-redis/
 
 
+def send_hero_data_to_redis(match_id, timestamp, team, player_number, x, y, hero_id):
+    # matchid_timestamp_[all/radiant/dire]_player_[0-9] , value: (x, y, hero_id)
+    pass
 
-def send_to_redis(data):
-    # matchid_[all/radiant/dire]_player_[0-9] , value: (x, y, hero_id)
-    # matchid_[all/radiant/dire]_building_[...] , value : alive/dead
+
+def send_building_data_to_redis(match_id, timestamp, team, building_dictionary):
+    # matchid_timestamp_[all/radiant/dire]_building_[...] , value : alive/dead
     pass
 
 
@@ -89,6 +93,7 @@ async def receive_gsi(request: web.Request) -> web.Response:
     args = await request.json()
     # Add the user
     # ...
+
     process_gsi(args)
     return web.Response(text=f"JSON Received.")
 
