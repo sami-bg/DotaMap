@@ -1,12 +1,22 @@
 var d2gsi = require("dota2-gsi");
 var server = new d2gsi();
 const axios = require("axios").default;
+// TODO: Add timestamp
 
 var global_gsi = {
   match_id: -1,
   team: "",
   building: null, // I'd rather just slap the entire building json here tbh
+  game_time: -1,
+  timestamp: -1,
   players: {
+    // Only filled if current player POV i.e. can't tell who it is
+    player11: {
+      xpos: -1,
+      ypos: -1,
+      name: "",
+      heroId: -1
+    },
     player0: {
       xpos: -1,
       ypos: -1,
@@ -188,8 +198,17 @@ server.events.on("newclient", function (client) {
     global_gsi.map_win = win_team;
   });
 
-  // Note: Sadly, if you are a player, it won't tell you which player ID you are (0 thru 9), so there's no clear way to
-  // correlate who these coordinates are for unless you are on team 'all'.
+// Note: Sadly, if you are a player, it won't tell you which player ID you are (0 thru 9), so there's no clear way to
+// correlate who these coordinates are for unless you are on team 'all'. Therefore, you are player11!
+  client.on("hero:xpos", function (xpos) {
+    let teamId = global_gsi.team === 'radiant' ? 2 : (global_gsi.team === 'dire' ? 3 : -1);
+    capturePlayerData(this.gamestate.hero,teamId, true, 11, xpos);
+  });
+
+  client.on("hero:ypos", function (ypos) {
+    let teamId = global_gsi.team === 'radiant' ? 2 : (global_gsi.team === 'dire' ? 3 : -1);
+    capturePlayerData(this.gamestate.hero,teamId, false, 11, ypos);
+  });
   // Some crazy shenanigans goes on when I use a for loop for this, so I gave up in the name of AGILE DEVELOPMENT
   client.on("hero:team2:player0:xpos", function (xpos) {
     capturePlayerData(this.gamestate.hero["team2"]["player0"], 2, true, 0, xpos);
@@ -274,6 +293,8 @@ server.events.on("newclient", function (client) {
   client.on("map:game_time", function (game_time) {
     // Polls game state for building data every 3 seconds.
     console.log(game_time);
+    global_gsi.game_time = game_time;
+    global_gsi.timestamp = this.gamestate.provider.timestamp || -1;
     if (game_time % 5 === 0 && game_time > 10) {
       if (global_gsi.team === "") {
         detectVisibilityTeamsOrPlayerOrSpectator(this.gamestate);

@@ -45,8 +45,8 @@ steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration\.
 
 The file must use the name pattern called gamestate_integration_*.cfg, for example gamestate_integration_dota2-gsi.cfg.'
 """
-
-with open("../app.json") as redisConfig:
+# TODO: This file, instead of querying cloud redis, sends post requests to the cloud server.
+with open("../local_settings.json") as redisConfig:
     redisJsonObject = json.load(redisConfig)
     redisConfig.close()
 
@@ -75,20 +75,27 @@ player_coordinates: Location = Location(0, 0)
 def process_gsi(args):
     print(json.loads(args['body']))
 
+
 # https://cybermaxs.wordpress.com/2015/08/28/storing-time-series-in-redis/
 
 
 def send_hero_data_to_redis(match_id, timestamp, team, player_number, x, y, hero_id):
-    # matchid_timestamp_[all/radiant/dire]_player_[0-9] , value: (x, y, hero_id)
+    # set:
+    # key: {timestamp_matchid} value: players_gametime.[r/d]_[0-9]:x:y:id
+    # retrieval: get range [my_stream_time_matchid, irl_stream_time_matchid]
+    # OR, using redisJSON, key: timestamp_matchid, value: players json
     pass
 
 
-def send_building_data_to_redis(match_id, timestamp, team, building_dictionary):
-    # matchid_timestamp_[all/radiant/dire]_building_[...] , value : alive/dead
+def send_building_data_to_redis(match_id, timestamp, team, building_json):
+    # key: {timestamp_matchid} value: buildings_gametime.[r/d][t/m/b]:[rax/tower]:[r/m/[1-4]]:[1/0(alive/dead)]
+    # probably encode the entire json as a string?
+    # OR, using redisJSON, key: timestamp_matchid, value: buildings json
     pass
 
 
-@routes.post('/json')
+# TODO : Separate building and player endpoints.
+@routes.post('/players')
 async def receive_gsi(request: web.Request) -> web.Response:
     args = await request.json()
     # Add the user
@@ -96,6 +103,16 @@ async def receive_gsi(request: web.Request) -> web.Response:
 
     process_gsi(args)
     return web.Response(text=f"JSON Received.")
+
+
+@routes.post('/buildings')
+async def receive_gsi(request: web.Request) -> web.Response:
+    args = await request.json()
+    # Add the user
+    # ...
+
+    process_gsi(args)
+    return web.Response(text=f"JSON Buildings Received.")
 
 
 async def init_app() -> web.Application:
