@@ -1,9 +1,18 @@
 import logging
+
 import azure.functions as func
 
 """
 Player-data Function - Stores player data in redis, responds to clients asking for player-data 
 """
+
+
+def process_incoming_player_data():
+    pass
+
+
+def dispense_outgoing_player_data():
+    pass
 
 
 def main(request: func.HttpRequest):
