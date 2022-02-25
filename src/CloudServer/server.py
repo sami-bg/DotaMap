@@ -24,6 +24,9 @@ routes = web.RouteTableDef()
 # TODO : This file would start redis locally, receives data from streamer, sends data to viewers.
 #  This has to be done on a linux environment for redis (hence, remote server, among other reasons)
 #  How the hell do I test it then? strange times. Let's see.
+
+# https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python?tabs=asgi%2Cazurecli-linux%2Capplication-level
+# ^ Use this. Weird but whatever. Might need to change endpoint logic.
 # Dispenses coordinates to viewer
 @routes.get(f'/{PLAYERS_GET_ENDPOINT}')
 async def send_player_data(request: web.Request) -> web.Response:

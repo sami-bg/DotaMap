@@ -45,16 +45,18 @@ steamapps\common\dota 2 beta\game\dota\cfg\gamestate_integration\.
 
 The file must use the name pattern called gamestate_integration_*.cfg, for example gamestate_integration_dota2-gsi.cfg.'
 """
-# TODO: This file, instead of querying cloud redis, sends post requests to the cloud server.
+
+# TODO: This file, instead of querying cloud redis directly, sends post requests to the cloud *server*.
 with open("../local_settings.json") as redisConfig:
     redisJsonObject = json.load(redisConfig)
     redisConfig.close()
 
+# TODO: Is this needed? Don't we just need the server info now?
 REDIS_HOST_NAME = redisJsonObject['redis']['host_name']
 REDIS_ACCESS_KEY = redisJsonObject['redis']['primary_access_key']
 REDIS_CONNECTION_STRING = redisJsonObject['redis']['primary_connection_string']
 REDIS_SSL_PORT = redisJsonObject['redis']['ssl_port']
-
+# TODO: Don't think this is needed either.
 r = redis.StrictRedis(host=REDIS_HOST_NAME, port=REDIS_SSL_PORT,
                       password=REDIS_ACCESS_KEY, ssl=True)
 
