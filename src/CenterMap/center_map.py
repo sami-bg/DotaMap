@@ -5,6 +5,8 @@ TODO: Looks for enemy outpost, checks x value vs y value to determine if current
 
 """
 
+# TODO: Load outpost icon png
+# TODO: Find pixel distance from center of outpost icon to the top-right of the minimap, and use those numbers below
 
 def find_map_corner_coordinates(img_hsv):
     pass
