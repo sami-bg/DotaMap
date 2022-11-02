@@ -66,23 +66,38 @@ C: AV_H - H = AV (Only vision)
 import cv2 as cv
 import os
 import numpy as np
+from util.hsv_thresholder import thresholder
 # This entire process is predicated on the map images being aligned. This will be done via outpost pixels being read from the entire screen ONCE
 def only_heroes():
     # Open HSV image using opencv2
-    user_img = cv.imread('./src/DetectUnits/RadiantPOV_Live.png', cv.COLOR_BGR2HSV)
-    no_vision = cv.imread('./src/DetectUnits/RadiantPOV_NoVision.png', cv.COLOR_BGR2HSV)
-    all_vision = cv.imread('./src/DetectUnits/RadiantPOV_AllVision_Warded.png', cv.COLOR_BGR2HSV)
+    user_img = cv.imread('./src/DetectUnits/SIMPLETEST.png')
+    no_vision = cv.imread('./src/DetectUnits/NOVISION.png')
+    all_vision = cv.imread('./src/DetectUnits/ALLVISION.png')
+
+    # Convert image to HSV
+    user_img_hsv = cv.cvtColor(user_img, cv.COLOR_RGB2HSV)
+    no_vision_hsv = cv.cvtColor(no_vision, cv.COLOR_RGB2HSV)
+    all_vision_hsv = cv.cvtColor(all_vision, cv.COLOR_RGB2HSV)
 
     # Combine images using mask
     # All pixels  that are in vision because we are filtering the no vision image out
     # mask an image against another image
-    vision_pixels = cv.bitwise_and(user_img, (mask_vision_pixels := cv.bitwise_xor(user_img, no_vision)))
-    show_img(vision_pixels)
+    MASK_MIN = 8 * np.array([1, 1, 1])
+    MASK_MAX = 255  * np.array([1, 1, 1])
+    mask_vision_pixels = cv.inRange(cv.absdiff(user_img, no_vision), MASK_MIN, MASK_MAX)
+    vision_pixels = cv.bitwise_and(user_img, user_img, mask=mask_vision_pixels)
+    show_img(vision_pixels, all_vision, no_vision)
+    show_img(mask_vision_pixels)
+    # thresholder(user_img, no_vision, all_vision, img=cv.cvtColor(vision_pixels, cv.COLOR_HSV2RGB))
     # We are left with all pixels in vision, we want to filter base vision map out and get all the units
-    nonmap_pixels = cv.bitwise_xor(vision_pixels, all_vision)
+    mask_nonvision_pixels = cv.inRange(cv.absdiff(vision_pixels, all_vision), MASK_MIN, MASK_MAX)
+    nonvision_pixels = cv.bitwise_and(vision_pixels, vision_pixels, mask=mask_nonvision_pixels)
+    show_img(nonvision_pixels, all_vision, no_vision)
+    show_img(mask_nonvision_pixels)
 
-
-def show_img(img):
+def show_img(*imgs):
+    # Horizontally concatenate images hconcat
+    img = cv.hconcat(imgs)
     cv.imshow('image', img)
     cv.waitKey(0)
     cv.destroyAllWindows()

@@ -43,7 +43,7 @@ def find_centroid_location(mask, unit_type: str):
 		pass
 
 
-img_hsv = load_img('dotamap.png')
+img_hsv = load_img('./src/DetectUnits/SIMPLETEST.png')
 masks = create_masks_from_color_thresholds(img_hsv)
 
 purple_mask = cv2.inRange(img_hsv, Colors.PLAYER_PURPLE.value.MIN, Colors.PLAYER_PURPLE.value.MAX)
