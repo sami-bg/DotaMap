@@ -71,8 +71,9 @@ from util.hsv_thresholder import thresholder
 def only_heroes():
     # Open HSV image using opencv2
     user_img = cv.imread('./src/DetectUnits/SIMPLETEST.png')
-    no_vision = cv.imread('./src/DetectUnits/NOVISION.png')
+    no_vision = cv.imread('./src/DetectUnits/dota_assets/img/dotamap_psd.png')
     all_vision = cv.imread('./src/DetectUnits/ALLVISION.png')
+    # TODO: Align no_vision image to user_img using GIMP or PSD or something. Experiment with finding fog of war brightness to generate allvision image
 
     # Convert image to HSV
     user_img_hsv = cv.cvtColor(user_img, cv.COLOR_RGB2HSV)
