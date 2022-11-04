@@ -71,9 +71,9 @@ from util.hsv_thresholder import thresholder
 def only_heroes():
     # Open HSV image using opencv2
     user_img = cv.imread('./src/DetectUnits/SIMPLETEST.png')
-    no_vision = cv.imread('./src/DetectUnits/dota_assets/img/dotamap_psd.png')
+    no_vision = cv.imread('./src/DetectUnits/NOVISION.png')
     all_vision = cv.imread('./src/DetectUnits/ALLVISION.png')
-    # TODO: Align no_vision image to user_img using GIMP or PSD or something. Experiment with finding fog of war brightness to generate allvision image
+    # TODO: Align images programmatically and test robustness of illuminated map using inRange
 
     # Convert image to HSV
     user_img_hsv = cv.cvtColor(user_img, cv.COLOR_RGB2HSV)
@@ -87,7 +87,7 @@ def only_heroes():
     MASK_MAX = 255  * np.array([1, 1, 1])
     mask_vision_pixels = cv.inRange(cv.absdiff(user_img, no_vision), MASK_MIN, MASK_MAX)
     vision_pixels = cv.bitwise_and(user_img, user_img, mask=mask_vision_pixels)
-    show_img(vision_pixels, all_vision, no_vision)
+    show_img(vision_pixels, all_vision, no_vision, user_img)
     show_img(mask_vision_pixels)
     # thresholder(user_img, no_vision, all_vision, img=cv.cvtColor(vision_pixels, cv.COLOR_HSV2RGB))
     # We are left with all pixels in vision, we want to filter base vision map out and get all the units
