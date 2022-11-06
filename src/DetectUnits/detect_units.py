@@ -128,8 +128,9 @@ def detect_objects(img, base_img):
     for contour in contours:
         x, y, w, h = cv.boundingRect(contour)
         bounding_boxes.append((x, y, w, h))
-        cv.rectangle(base_img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 1)
 
+    show_img(base_img, img)
     return contours, bounding_boxes, base_img
 
 
