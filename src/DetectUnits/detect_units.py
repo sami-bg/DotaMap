@@ -133,7 +133,7 @@ def detect_objects(img, base_img):
     show_img(base_img, img)
     return contours, bounding_boxes, base_img
 
-
+# Works best for basic icons on the simple map. Not yet evaluated on the non-simple map
 def round_two(user_image, no_vision_image, all_vision_image):
     # This function runs threshold wrongly on the base_image and also the vision and dark image
     # And does the same as above
@@ -182,7 +182,10 @@ def slidify_threshold(img):
 
 
 if __name__ == '__main__':
+    # TODO: Try to very first approach with hsv bounding and try and profile both
     user_img = cv.imread('./src/DetectUnits/280pxlive.png')
+    user_img = cv.imread('./src/DetectUnits/280pxlive.png')
+    user_img = cv.imread('./src/DetectUnits/bloated_hero2.png')
     no_vision = cv.imread(BASE_NOVISION_PATH)
     all_vision = cv.imread(BASE_ALLVISION_PATH)
     # res, img = only_heroes(user_img, no_vision, all_vision)
