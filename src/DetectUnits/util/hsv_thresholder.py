@@ -1,7 +1,7 @@
 # Credits to user nathancy on StackOverflow post 10948589
 import cv2
 import numpy as np
-
+import scipy.ndimage
 
 def nothing(x):
 	pass
@@ -51,9 +51,10 @@ def thresholder(*supplemental, path=None, img=None):
 		upper = np.array([hMax, sMax, vMax])
 
 		# Convert to HSV format and color threshold
-		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-		mask = cv2.inRange(hsv, lower, upper)
+		# hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+		hsv = image
 		adjusted = cv2.convertScaleAbs(image, alpha=(alpha/100), beta=beta)
+		mask = cv2.inRange(adjusted, lower, upper)
 		result = cv2.bitwise_and(adjusted, adjusted, mask=mask)
 
 		# Print if there is a change in HSV value
@@ -73,3 +74,4 @@ def thresholder(*supplemental, path=None, img=None):
 			break
 
 	cv2.destroyAllWindows()
+	return result
