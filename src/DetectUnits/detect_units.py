@@ -64,10 +64,8 @@ C: AV_H - H = AV (Only vision)
 
 """
 import cv2 as cv
-import os
 import numpy as np
-from util.hsv_thresholder import thresholder
-import scipy.ndimage
+
 BASE_ALLVISION_PATH = "./src/DetectUnits/dota_assets/util/8bit259_illuminated_dotamap_border.png"
 BASE_NOVISION_PATH = "./src/DetectUnits/dota_assets/util/8bit259_dark_dotamap_border.png"
 
@@ -130,19 +128,19 @@ def detect_objects(img, base_img):
         bounding_boxes.append((x, y, w, h))
         cv.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 1)
 
-    show_img(base_img, img)
-    return contours, bounding_boxes, base_img
+    # show_img(base_img, img)
+    return contours, bounding_boxes, base_img, img
 
 # Works best for basic icons on the simple map. Not yet evaluated on the non-simple map
 def round_two(user_image, no_vision_image, all_vision_image):
     # This function runs threshold wrongly on the base_image and also the vision and dark image
     # And does the same as above
     ret, thresh_usr = cv.threshold(user_image, 141, 255, 0)
-    ret, thresh_nv  = cv.threshold(no_vision_image, 127, 255, 0)
+    ret, thresh_nv  = cv.threshold(no_vision_image, 141, 255, 0)
     ret, thresh_av = cv.threshold(all_vision_image, 0, 255, 0)
+    slidify_threshold(thresh_usr)
     res, base = only_heroes(thresh_usr, thresh_nv, thresh_nv)
-    detect_objects(res, user_img)
-    return res, user_image
+    return detect_objects(res, user_img)
 
 
 def slidify_threshold(img):
@@ -184,11 +182,11 @@ def slidify_threshold(img):
 if __name__ == '__main__':
     # TODO: Try to very first approach with hsv bounding and try and profile both
     user_img = cv.imread('./src/DetectUnits/280pxlive.png')
-    user_img = cv.imread('./src/DetectUnits/280pxlive.png')
     user_img = cv.imread('./src/DetectUnits/bloated_hero2.png')
     no_vision = cv.imread(BASE_NOVISION_PATH)
     all_vision = cv.imread(BASE_ALLVISION_PATH)
     # res, img = only_heroes(user_img, no_vision, all_vision)
-    res = round_two(user_img, no_vision, all_vision)
+    _, _, base, res = round_two(user_img, no_vision, all_vision)
+    show_img(base, res, no_vision, all_vision)
     # Test
 

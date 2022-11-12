@@ -1,0 +1,13 @@
+"""
+Make it easy to get images of icons in the dota_assets/img/minimap_icons folder
+"""
+COURIER_PATH = "..\dota_assets\img\minimap_icons\minimap_courier_psd_7de56262.png"
+CREEP_PATH = "..\dota_assets\img\minimap_icons\minimap_creep_psd_ac79f11d.png"
+CAMP_PATH = "..\dota_assets\img\minimap_icons\minimap_creepcamp_psd_72d26740.png"
+DEATH_PATH ="..\dota_assets\img\minimap_icons\minimap_death_psd_6987e15d.png"
+ENEMYICON_PATH = "..\dota_assets\img\minimap_icons\minimap_enemyicon_psd_c048dffa.png"
+ENEMYHERO_PATH = "..\dota_assets\img\minimap_icons\minimap_hero_enemy_psd.png"
+TEAMMATE_PATH = "..\dota_assets\img\minimap_icons\minimap_hero_team_psd.png"
+SELF_PATH = "..\dota_assets\img\minimap_icons\minimap_herocircle_self_psd_8198829e.png"
+INVISTEAMMATE_PATH = "..\dota_assets\img\minimap_icons\minimap_heroinvis_psd_59d5ce33.png"
+PLAINCIRCLE_PATH = "..\dota_assets\img\minimap_icons\minimap_plaincircle_psd_c713c3ef.png"
